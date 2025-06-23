@@ -107,7 +107,7 @@ const DashboardClientFetch: React.FC = () => {
                       : "bg-blue-600 hover:bg-blue-700 text-white"
                   }`}
                 >
-                  {order.requestComplete ? "Completed" : "Mark Complete"}
+                  {order.requestComplete ? "Completed " : "Mark Complete"}
                 </button>
               </div>
             </div>
