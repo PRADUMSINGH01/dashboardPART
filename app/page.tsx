@@ -47,8 +47,8 @@ const DashboardClientFetch: React.FC = () => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [viewMode, setViewMode] = useState<"summary" | "detail">("summary");
   const [dateRange, setDateRange] = useState<{ label: string; days: number }>({
-    label: "Today",
-    days: 0,
+    label: "All",
+    days: -1,
   });
 
   useEffect(() => {
@@ -97,6 +97,11 @@ const DashboardClientFetch: React.FC = () => {
   // Filter orders based on selected date range
   useEffect(() => {
     if (!orders.length) return;
+
+    if (dateRange.days === -1) {
+      setFilteredOrders(orders);
+      return;
+    }
 
     const now = new Date();
     const startDate = new Date(now);
@@ -153,11 +158,11 @@ const DashboardClientFetch: React.FC = () => {
     completed: [],
   };
 
-  // Categorize orders with fallback for missing status
+  // FIXED: Properly categorize orders including "inquiry"
   filteredOrders.forEach((order) => {
     const status = order.status || "inquiry";
-    if (statusCategories.hasOwnProperty(status)) {
-      statusCategories[status].push(order);
+    if (status in statusCategories) {
+      statusCategories[status as OrderStatus].push(order);
     } else {
       statusCategories.inquiry.push(order);
     }
@@ -224,6 +229,7 @@ const DashboardClientFetch: React.FC = () => {
 
   // Date filter options
   const dateFilters = [
+    { label: "All", days: -1 },
     { label: "Today", days: 0 },
     { label: "Yesterday", days: 1 },
     { label: "2 Days Ago", days: 2 },
